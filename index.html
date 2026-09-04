@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Naeem's — Onboarding</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Draggable.min.js"></script>
+<style>
+  /* ---------- Parafina Trial (local, medium-width "M" variant) ---------- */
+  @font-face {
+    font-family: 'Parafina Trial';
+    src: url('fonts/ParafinaTrial-Black.otf') format('opentype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Parafina Trial';
+    src: url('fonts/ParafinaTrial-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Parafina Trial';
+    src: url('fonts/ParafinaTrial-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Parafina Trial';
+    src: url('fonts/ParafinaTrial-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Parafina Trial';
+    src: url('fonts/ParafinaTrial-Light.otf') format('opentype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Parafina Trial';
+    src: url('fonts/ParafinaTrial-Thin.otf') format('opentype');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: 'Parafina Trial', sans-serif;
+    text-transform: uppercase;
+    background: #2b2b38;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #app {
+    position: relative;
+    width: 100%;
+    max-width: 430px;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .screen {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    will-change: transform, opacity;
+  }
+
+  /* ---------- per-screen palettes ----------
+     ONE cohesive theme system. Only the HUE changes between screens;
+     the light/dark structure is identical everywhere:
+       background : light, saturated tint of the hue
+       --bold     : darkest near-black shade of the hue  (headline bold, divider, dots, logo)
+       --light    : muted mid-tone shade of the hue      (headline light lines)
+       --subtext  : soft dark shade of the hue           (subtext, reads gently)
+       --btn      : deeper tint of the background        (arrow button / slide handle bg)
+       --btn-fg   : darkest shade                        (control icon) */
+  #s1 {
+    background: #9FE870;   /* green base */
+    --bold:    #163300;
+    --light:   #4C7A57;
+    --subtext: #2F5738;
+    --accent:  #163300;
+    --btn:     #74C247;
+    --btn-fg:  #163300;
+    --logo:    #163300;
+  }
+  #s2 {
+    background: #DDCA50;   /* gold base */
+    --bold:    #3A341C;
+    --light:   #8A8340;
+    --subtext: #5A5326;
+    --accent:  #3A341C;
+    --btn:     #C6B03A;
+    --btn-fg:  #3A341C;
+    --logo:    #3A341C;
+  }
+  #s3 {
+    background: #F2A0B8;   /* rose base */
+    --bold:    #3D0F1A;
+    --light:   #9E4059;
+    --subtext: #7A3149;
+    --accent:  #3D0F1A;
+    --btn:     #D96E8C;
+    --btn-fg:  #3D0F1A;
+    --logo:    #3D0F1A;
+  }
+
+  /* background blend shape — parked in the TOP-RIGHT corner, FULLY
+     inside the screen bounds (never clipped), large and bold but
+     barely-there: opacity ~0.07, z-index 0, sits behind the headline. */
+  .blend {
+    position: absolute;
+    top: 5%;
+    right: 5%;
+    width: 190px;
+    pointer-events: none;
+    color: var(--bold);
+    opacity: 0;
+    user-select: none;
+    z-index: 0;
+  }
+  .blend svg { display: block; width: 100%; height: auto; overflow: visible; }
+  #s1 .blend { width: 120px; }
+  #s2 .blend { width: 190px; }
+  #s3 .blend { width: 140px; }
+
+  /* ---------- top-weighted layout ---------- */
+  /* consistent page side padding for every element */
+  .logo, .middle, .bottom, .slide-track { left: 24px; right: 24px; }
+
+  .logo {
+    position: absolute;
+    top: 8%;
+    z-index: 1;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3.5px;
+    color: var(--logo);
+  }
+  .logo .s { color: var(--accent); }
+
+  .middle {
+    position: absolute;
+    top: 21%;
+    z-index: 1;
+  }
+  .headline .line-mask {
+    display: block;
+    /* drop-in animation needs the line visible while it's above its slot */
+    overflow: visible;
+    /* room for descenders (y, g) */
+    padding-bottom: 0.1em;
+    margin-bottom: -0.1em;
+  }
+  .headline .line {
+    display: block;
+    font-size: clamp(52px, 13.5vw, 74px);
+    line-height: 1.03;
+    letter-spacing: -1.6px;
+    will-change: transform, opacity;
+  }
+  .line.bold { font-weight: 900; color: var(--bold); }
+  .line.light { font-weight: 300; color: var(--light); }
+
+  .divider {
+    width: 44px;
+    height: 2px;
+    background: var(--accent);
+    transform-origin: left center;
+    margin: 26px 0 16px;
+  }
+  .subtext {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0.06em;
+    color: var(--subtext);
+    max-width: 84%;
+  }
+
+  .badge {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    color: var(--bold);
+  }
+  .badge svg { width: 22px; height: 22px; flex: none; }
+
+  /* ---------- bottom controls, pinned ---------- */
+  .bottom {
+    position: absolute;
+    bottom: 8%;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .dots { display: flex; align-items: center; gap: 7px; }
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 10px;
+    background: var(--accent);
+    opacity: 0.3;
+    transition: width .3s ease, opacity .3s ease;
+  }
+  .dot.active { width: 22px; opacity: 1; }
+
+  .arrow-btn {
+    width: 54px;
+    height: 54px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* deeper tint of this screen's own background so it belongs to the palette */
+    background: var(--btn);
+    color: var(--btn-fg);
+  }
+  .arrow-btn svg { width: 20px; height: 20px; }
+
+  /* slide to enter (screen 3) */
+  #s3 .bottom { bottom: calc(8% + 92px); }
+  .slide-track {
+    position: absolute;
+    bottom: 8%;
+    z-index: 1;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.15);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .slide-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bold);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    pointer-events: none;
+  }
+  .slide-handle {
+    position: absolute;
+    left: 6px;
+    top: 6px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    /* matches the arrow button — deeper tint of this screen's background */
+    background: var(--btn);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--btn-fg);
+    cursor: grab;
+    touch-action: none;
+  }
+  .slide-handle:active { cursor: grabbing; }
+  .slide-handle svg { width: 20px; height: 20px; }
+
+  /* white flash + welcome */
+  #flash {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    opacity: 0;
+  }
+  #welcome {
+    display: none;
+    font-size: 30px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    color: #9E4059;
+  }
+  #welcome span { color: #3D0F1A; }
+</style>
+</head>
+<body>
+  <div id="app">
+
+    <!-- SCREEN 1 -->
+    <section class="screen" id="s1">
+      <div class="blend"><svg viewBox="-12 -12 224 288" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M55 82 C55 40 145 40 145 82 C145 118 100 120 100 158 L100 176" fill="none" stroke="currentColor" stroke-width="44" stroke-linecap="round" stroke-linejoin="round"/><circle cx="100" cy="236" r="24" fill="currentColor"/></svg></div>
+      <div class="logo">NAEEM'<span class="s">S</span></div>
+      <div class="middle">
+        <h1 class="headline">
+          <span class="line-mask"><span class="line bold">What</span></span>
+          <span class="line-mask"><span class="line light">Are You</span></span>
+          <span class="line-mask"><span class="line bold">Putting On</span></span>
+          <span class="line-mask"><span class="line light">Your Skin?</span></span>
+        </h1>
+        <div class="divider"></div>
+        <p class="subtext">It's worth knowing.</p>
+      </div>
+      <div class="bottom">
+        <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <button class="arrow-btn" data-next aria-label="Next">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- SCREEN 2 -->
+    <section class="screen" id="s2">
+      <div class="blend"><svg viewBox="-4 -4 106 98" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true"><path d="M23,20 L23,16 L34,10 L37,12 L41,11 L44,7 L47,5 L56,7 L55,15 L65,18 L68,7 L69,2 L72,8 L77,17 L85,23 L88,32 L94,36 L95,45 L94,49 L90,58 L86,66 L78,70 L75,69 L72,70 L67,68 L60,60 L54,60 L43,52 L38,52 L22,58 L6,59 L8,53 L4,43 L2,39 L4,29 L14,25 Z M76,74 L83,75 L84,82 L79,87 L74,83 Z"/></svg></div>
+      <div class="logo">NAEEM'<span class="s">S</span></div>
+      <div class="middle">
+        <h1 class="headline">
+          <span class="line-mask"><span class="line bold">Know</span></span>
+          <span class="line-mask"><span class="line light">Where</span></span>
+          <span class="line-mask"><span class="line bold">It Comes</span></span>
+          <span class="line-mask"><span class="line light">From</span></span>
+        </h1>
+        <div class="divider"></div>
+        <p class="subtext">Original products. Carefully sourced.</p>
+        <div class="badge">
+          <svg viewBox="-4 -4 106 98" fill="currentColor" aria-hidden="true">
+            <path d="M23,20 L23,16 L34,10 L37,12 L41,11 L44,7 L47,5 L56,7 L55,15 L65,18 L68,7 L69,2 L72,8 L77,17 L85,23 L88,32 L94,36 L95,45 L94,49 L90,58 L86,66 L78,70 L75,69 L72,70 L67,68 L60,60 L54,60 L43,52 L38,52 L22,58 L6,59 L8,53 L4,43 L2,39 L4,29 L14,25 Z M76,74 L83,75 L84,82 L79,87 L74,83 Z"/>
+          </svg>
+          <span>FROM AUSTRALIA</span>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <button class="arrow-btn" data-next aria-label="Next">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- SCREEN 3 -->
+    <section class="screen" id="s3">
+      <div class="blend"><svg viewBox="-8 -8 88 88" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="27" cy="27" r="19" fill="none" stroke="currentColor" stroke-width="9"/><line x1="41" y1="41" x2="64" y2="64" stroke="currentColor" stroke-width="9" stroke-linecap="round"/></svg></div>
+      <div class="logo">NAEEM'<span class="s">S</span></div>
+      <div class="middle">
+        <h1 class="headline">
+          <span class="line-mask"><span class="line bold">Now</span></span>
+          <span class="line-mask"><span class="line light">Lets Find</span></span>
+          <span class="line-mask"><span class="line bold">What's</span></span>
+          <span class="line-mask"><span class="line light">Right For You</span></span>
+        </h1>
+        <div class="divider"></div>
+        <p class="subtext">Thoughtfully selected skincare, for real skin and real life.</p>
+      </div>
+      <div class="bottom">
+        <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+      </div>
+      <div class="slide-track" id="slideTrack">
+        <span class="slide-label" id="slideLabel">ENTER NAEEM'S</span>
+        <div class="slide-handle" id="slideHandle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+    </section>
+
+    <div id="flash"><div id="welcome">Welcome to <span>Naeem's</span></div></div>
+
+  </div>
+
+<script>
+  gsap.registerPlugin(Draggable);
+
+  const app = document.getElementById('app');
+  const screens = gsap.utils.toArray('.screen');
+  let current = 0;
+  let animating = false;
+  let done = false;
+
+  /* ---------- entrance ---------- */
+  function entranceEls(s) {
+    return {
+      logo: s.querySelector('.logo'),
+      lines: gsap.utils.toArray(s.querySelectorAll('.headline .line')),
+      divider: s.querySelector('.divider'),
+      subtext: s.querySelector('.subtext'),
+      extra: s.querySelector('.badge'),
+      blend: s.querySelector('.blend')
+    };
+  }
+
+  // GSAP only ever touches opacity, transform (y) and scaleX here — never color.
+  function prepScreen(i) {
+    const e = entranceEls(screens[i]);
+    gsap.set(e.logo, { opacity: 0 });
+    gsap.set(e.lines, { y: -80, opacity: 0 });
+    gsap.set(e.divider, { scaleX: 0 });
+    gsap.set(e.subtext, { opacity: 0 });
+    if (e.extra) gsap.set(e.extra, { opacity: 0 });
+    gsap.set(e.blend, { opacity: 0 });
+  }
+
+  function enterScreen(i) {
+    const e = entranceEls(screens[i]);
+    const tl = gsap.timeline();
+    // 1. logo fades in first
+    tl.to(e.logo, { opacity: 1, duration: 0.3, ease: 'power2.out' });
+    // 2. headline lines drop in from above and bounce into place, ONE AFTER
+    //    ANOTHER — each line mostly finishes its bounce before the next starts,
+    //    like a ball hitting the ground and settling.
+    e.lines.forEach((ln, idx) => {
+      tl.to(ln, {
+        y: 0,
+        opacity: 1,
+        duration: 0.9,
+        ease: 'bounce.out'
+      }, idx === 0 ? '+=0.05' : '-=0.75');
+    });
+    // 3. divider draws
+    tl.to(e.divider, { scaleX: 1, duration: 0.4, ease: 'power2.inOut' }, '-=0.05');
+    // 4. subtext fades in
+    tl.to(e.subtext, { opacity: 1, duration: 0.4, ease: 'power2.out' }, '-=0.05');
+    if (e.extra) tl.to(e.extra, { opacity: 1, duration: 0.4, ease: 'power2.out' }, '-=0.2');
+    // 5. background blend shape settles in last, very slowly
+    tl.to(e.blend, { opacity: 0.07, duration: 1.2, ease: 'power1.out' }, '+=0.1');
+
+    // Safety net: if the rAF ticker was frozen (e.g. loaded in a background
+    // tab) and the timeline never advanced, force every element to its final
+    // state so the headline can never be left permanently invisible.
+    setTimeout(() => {
+      if (tl.progress() < 1) {
+        tl.progress(1);
+        gsap.set(e.lines, { y: 0, opacity: 1 });
+        gsap.set([e.logo], { opacity: 1 });
+        gsap.set(e.divider, { scaleX: 1 });
+        gsap.set(e.subtext, { opacity: 1 });
+        if (e.extra) gsap.set(e.extra, { opacity: 1 });
+        gsap.set(e.blend, { opacity: 0.07 });
+      }
+    }, 6000);
+  }
+
+  /* ---------- dots ---------- */
+  function updateDots() {
+    screens.forEach(s => {
+      s.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    });
+  }
+
+  /* ---------- premium screen transition ---------- */
+  function goTo(i) {
+    if (animating || done || i === current || i < 0 || i > screens.length - 1) return;
+    animating = true;
+    const outgoing = screens[current];
+    const incoming = screens[i];
+
+    prepScreen(i);
+    gsap.set(incoming, { opacity: 0, scale: 1.02, pointerEvents: 'auto' });
+    gsap.set(outgoing, { pointerEvents: 'none' });
+
+    gsap.to(outgoing, {
+      opacity: 0, scale: 0.98, duration: 0.6, ease: 'power2.inOut',
+      onComplete: () => gsap.set(outgoing, { scale: 1 })
+    });
+    gsap.to(incoming, {
+      opacity: 1, scale: 1, duration: 0.6, ease: 'power2.inOut', delay: 0.15,
+      onComplete: () => {
+        animating = false;
+        enterScreen(i);
+      }
+    });
+
+    // Safety net for a frozen ticker (tab backgrounded mid-transition): make
+    // sure the incoming screen ends up visible and interactive no matter what.
+    setTimeout(() => {
+      if (current !== i) return;
+      gsap.set(incoming, { opacity: 1, scale: 1, pointerEvents: 'auto' });
+      gsap.set(outgoing, { opacity: 0, scale: 1, pointerEvents: 'none' });
+      if (animating) { animating = false; enterScreen(i); }
+    }, 2500);
+
+    current = i;
+    updateDots();
+  }
+
+  /* ---------- arrow buttons ---------- */
+  document.querySelectorAll('[data-next]').forEach(btn => {
+    btn.addEventListener('click', () => goTo(current + 1));
+  });
+
+  /* ---------- swipe / drag navigation ---------- */
+  let sx = 0, sy = 0, touching = false;
+  app.addEventListener('touchstart', e => {
+    if (e.target.closest('.slide-track')) return;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; touching = true;
+  }, { passive: true });
+  app.addEventListener('touchend', e => {
+    if (!touching) return;
+    touching = false;
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) goTo(current + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+
+  let md = false, mx = 0;
+  app.addEventListener('mousedown', e => {
+    if (e.target.closest('.slide-track')) return;
+    md = true; mx = e.clientX;
+  });
+  window.addEventListener('mouseup', e => {
+    if (!md) return;
+    md = false;
+    const dx = e.clientX - mx;
+    if (Math.abs(dx) > 60) goTo(current + (dx < 0 ? 1 : -1));
+  });
+
+  /* ---------- slide to enter ---------- */
+  const slideTrack = document.getElementById('slideTrack');
+  const slideHandle = document.getElementById('slideHandle');
+  const slideLabel = document.getElementById('slideLabel');
+  let maxX = 0;
+
+  function measureSlider() {
+    maxX = slideTrack.clientWidth - slideHandle.offsetWidth - 12;
+    if (dragInstance) dragInstance.applyBounds({ minX: 0, maxX: maxX });
+  }
+
+  const dragInstance = Draggable.create(slideHandle, {
+    type: 'x',
+    bounds: { minX: 0, maxX: 0 },
+    onPress: measureSlider,
+    onDrag: function () {
+      const p = maxX ? this.x / maxX : 0;
+      slideLabel.style.opacity = Math.max(0, 1 - p * 1.6);
+      if (p >= 0.85) completeEnter();
+    },
+    onDragEnd: function () {
+      if (done) return;
+      const d = this;
+      gsap.to(this.target, {
+        x: 0, duration: 0.9, ease: 'elastic.out(1, 0.45)',
+        onUpdate: () => d.update()
+      });
+      gsap.to(slideLabel, { opacity: 1, duration: 0.4 });
+    }
+  })[0];
+
+  function completeEnter() {
+    if (done) return;
+    done = true;
+    dragInstance.disable();
+    gsap.to(slideHandle, { x: maxX, duration: 0.35, ease: 'power2.out' });
+    gsap.to(slideLabel, { opacity: 0, duration: 0.2 });
+    gsap.to('#s3', {
+      opacity: 0, scale: 0.98, duration: 0.6, ease: 'power2.inOut', delay: 0.2,
+      onComplete: showWelcome
+    });
+  }
+
+  function showWelcome() {
+    const flash = document.getElementById('flash');
+    const welcome = document.getElementById('welcome');
+    flash.style.display = 'flex';
+    gsap.fromTo(flash, { opacity: 0 }, {
+      opacity: 1, duration: 0.22, ease: 'power1.out',
+      onComplete: () => {
+        welcome.style.display = 'block';
+        gsap.fromTo(welcome, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, delay: 0.12, ease: 'power2.out' });
+      }
+    });
+  }
+
+  window.addEventListener('resize', measureSlider);
+
+  /* ---------- init ---------- */
+  screens.forEach((s, i) => gsap.set(s, { opacity: i === 0 ? 1 : 0, pointerEvents: i === 0 ? 'auto' : 'none' }));
+  updateDots();
+  prepScreen(0);
+  measureSlider();
+  window.addEventListener('load', measureSlider);
+  enterScreen(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+
+# Node (not used now, but safe to ignore if ever added)
+node_modules/
+npm-debug.log*
+
+# Vercel
+.vercel

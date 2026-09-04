@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Naeem's — Onboarding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: #d9d6ea;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #app {
+    position: relative;
+    width: 100%;
+    max-width: 430px;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  #track {
+    display: flex;
+    width: 300%;
+    height: 100%;
+    will-change: transform;
+  }
+
+  .screen {
+    flex: 0 0 33.3333%;
+    width: 33.3333%;
+    height: 100%;
+    padding: 30px 28px 36px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #s1 { background: #F0EEFF; }
+  #s2 { background: #EEF5FF; }
+  #s3 { background: #FFF0E8; }
+
+  /* logo */
+  .logo {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3.5px;
+    color: #1c1c24;
+  }
+  .logo .s { color: #FF7A45; }
+
+  /* middle / headline */
+  .middle {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .headline .line {
+    display: block;
+    font-size: clamp(42px, 13.2vw, 72px);
+    line-height: 1.04;
+    letter-spacing: -1.6px;
+  }
+  .line.bold { font-weight: 800; }
+  .line.light { font-weight: 300; }
+
+  #s1 .line.bold { color: #4B3FBF; }
+  #s1 .line.light { color: #9B8FDF; }
+  #s2 .line.bold { color: #1A5FBF; }
+  #s2 .line.light { color: #6B9FDF; }
+  #s3 .line.bold { color: #BF4A1A; }
+  #s3 .line.light { color: #DF8B6B; }
+
+  .divider {
+    width: 40px;
+    height: 2px;
+    background: #FF7A45;
+    margin: 28px 0 16px;
+  }
+  .subtext {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #8b8a99;
+    max-width: 82%;
+  }
+
+  .badge {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    color: #1A5FBF;
+  }
+  .badge svg { width: 24px; height: 24px; flex: none; }
+
+  /* bottom */
+  .bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 26px;
+  }
+  .dots { display: flex; align-items: center; gap: 7px; }
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 10px;
+    background: #cbc6d8;
+    transition: width .3s ease, background .3s ease;
+  }
+  #s2 .dot { background: #c2ccdc; }
+  #s3 .dot { background: #ded0c6; }
+  .dot.active { width: 22px; background: #FF7A45; }
+
+  .arrow-btn {
+    width: 54px;
+    height: 54px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+  }
+  .arrow-btn svg { width: 20px; height: 20px; }
+  #s1 .arrow-btn { background: #4B3FBF; }
+  #s2 .arrow-btn { background: #1A5FBF; }
+
+  .cta {
+    width: 100%;
+    margin-top: 20px;
+    padding: 19px;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    background: #FF7A45;
+    color: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+  }
+</style>
+</head>
+<body>
+  <div id="app">
+    <div id="track">
+
+      <!-- SCREEN 1 -->
+      <section class="screen" id="s1">
+        <div class="logo">NAEEM'<span class="s">S</span></div>
+        <div class="middle">
+          <h1 class="headline">
+            <span class="line bold">What</span>
+            <span class="line light">Are You</span>
+            <span class="line bold">Putting On</span>
+            <span class="line light">Your Skin?</span>
+          </h1>
+          <div class="divider"></div>
+          <p class="subtext">It's worth knowing.</p>
+        </div>
+        <div class="bottom">
+          <div class="dots">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+          <button class="arrow-btn" data-next aria-label="Next">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- SCREEN 2 -->
+      <section class="screen" id="s2">
+        <div class="logo">NAEEM'<span class="s">S</span></div>
+        <div class="middle">
+          <h1 class="headline">
+            <span class="line bold">Know</span>
+            <span class="line light">Where</span>
+            <span class="line bold">It Comes</span>
+            <span class="line light">From</span>
+          </h1>
+          <div class="divider"></div>
+          <p class="subtext">Original products. Carefully sourced.</p>
+          <div class="badge">
+            <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M20 42 L31 31 L43 35 L53 24 L61 31 L73 29 L85 41 L82 57 L69 75 L53 81 L39 77 L27 65 L19 55 Z"/>
+            </svg>
+            <span>FROM AUSTRALIA</span>
+          </div>
+        </div>
+        <div class="bottom">
+          <div class="dots">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+          <button class="arrow-btn" data-next aria-label="Next">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- SCREEN 3 -->
+      <section class="screen" id="s3">
+        <div class="logo">NAEEM'<span class="s">S</span></div>
+        <div class="middle">
+          <h1 class="headline">
+            <span class="line bold">Now</span>
+            <span class="line light">Lets Find</span>
+            <span class="line bold">What's</span>
+            <span class="line light">Right For You</span>
+          </h1>
+          <div class="divider"></div>
+          <p class="subtext">Thoughtfully selected skincare, for real skin and real life.</p>
+        </div>
+        <div class="bottom">
+          <div class="dots">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+        </div>
+        <button class="cta">ENTER NAEEM'S &rarr;</button>
+      </section>
+
+    </div>
+  </div>
+
+<script>
+  const app = document.getElementById('app');
+  const track = document.getElementById('track');
+  const screens = gsap.utils.toArray('.screen');
+  let current = 0;
+  let animating = false;
+
+  function positionTrack(animate) {
+    const x = -current * app.offsetWidth;
+    if (animate) {
+      gsap.to(track, { x, duration: 0.5, ease: 'power2.inOut',
+        onComplete: () => { animating = false; } });
+    } else {
+      gsap.set(track, { x });
+    }
+  }
+
+  function updateDots() {
+    screens.forEach(s => {
+      s.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    });
+  }
+
+  function enterScreen(i) {
+    const s = screens[i];
+    const els = [
+      s.querySelector('.logo'),
+      ...s.querySelectorAll('.headline .line'),
+      s.querySelector('.divider'),
+      s.querySelector('.subtext'),
+      s.querySelector('.badge'),
+      s.querySelector('.bottom'),
+      s.querySelector('.cta')
+    ].filter(Boolean);
+
+    gsap.killTweensOf(els);
+    const tl = gsap.timeline();
+    tl.set(els, { opacity: 0, y: 22 });
+    tl.to(els, { opacity: 1, y: 0, duration: 0.4, stagger: 0.12, ease: 'power2.out' });
+  }
+
+  function goTo(i) {
+    if (animating || i === current || i < 0 || i > screens.length - 1) return;
+    animating = true;
+    current = i;
+    updateDots();
+    positionTrack(true);
+    enterScreen(i);
+  }
+
+  // arrow buttons
+  document.querySelectorAll('[data-next]').forEach(btn => {
+    btn.addEventListener('click', () => goTo(current + 1));
+  });
+
+  // CTA
+  document.querySelector('.cta').addEventListener('click', () => {
+    gsap.fromTo('.cta', { scale: 1 }, { scale: 0.95, duration: 0.12, yoyo: true, repeat: 1, ease: 'power1.inOut' });
+  });
+
+  // swipe (touch)
+  let sx = 0, sy = 0, touching = false;
+  app.addEventListener('touchstart', e => {
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; touching = true;
+  }, { passive: true });
+  app.addEventListener('touchend', e => {
+    if (!touching) return;
+    touching = false;
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+      goTo(current + (dx < 0 ? 1 : -1));
+    }
+  }, { passive: true });
+
+  // mouse drag (desktop preview convenience)
+  let md = false, mx = 0;
+  app.addEventListener('mousedown', e => { md = true; mx = e.clientX; });
+  window.addEventListener('mouseup', e => {
+    if (!md) return;
+    md = false;
+    const dx = e.clientX - mx;
+    if (Math.abs(dx) > 60) goTo(current + (dx < 0 ? 1 : -1));
+  });
+
+  window.addEventListener('resize', () => positionTrack(false));
+
+  // init
+  updateDots();
+  positionTrack(false);
+  window.addEventListener('load', () => enterScreen(0));
+  enterScreen(0);
+</script>
+</body>
+</html>
